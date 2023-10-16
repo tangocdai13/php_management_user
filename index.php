@@ -5,6 +5,7 @@ require_once 'config.php';
 require_once 'includes/function.php';
 require_once 'includes/connect.php';
 require_once 'includes/database.php';
+require_once 'includes/session.php';
 
 $modules = _MODULES_DEFAULT;
 $action = _ACTION_DEFAULT;
