@@ -2,6 +2,8 @@
 session_start();
 
 require_once 'config.php';
+require_once 'includes/function.php';
+
 $modules = _MODULES_DEFAULT;
 $action = _ACTION_DEFAULT;
 
@@ -22,6 +24,6 @@ if (file_exists($path)) {
     require 'modules/errors/404.php';
 }
 
-echo '<hr>';
-echo $modules . '<br />';
-echo $action;
+//echo _WEB_HOST_ROOT;
+//echo '<br />';
+//echo _WEB_HOST_TEMPLATE;
