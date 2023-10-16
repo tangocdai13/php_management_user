@@ -2,6 +2,11 @@
 session_start();
 
 require_once 'config.php';
+//php mailer
+require_once 'includes/phpmailer/Exception.php';
+require_once 'includes/phpmailer/PHPMailer.php';
+require_once 'includes/phpmailer/SMTP.php';
+//includes
 require_once 'includes/function.php';
 require_once 'includes/connect.php';
 require_once 'includes/database.php';
