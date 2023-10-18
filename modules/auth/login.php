@@ -6,6 +6,32 @@ $data = [
 ];
 
 layout('header-login', $data);
+
+if (isPost()) {
+    if (!empty(getBody()['email']) && !empty(getBody()['password'])) {
+        $email = 'tangocdai13@gmail.com';
+        $password = '123456';
+        $errors = [];
+
+        if (filter_var(getBody()['email'], FILTER_VALIDATE_EMAIL)) {
+            if (getBody()['email'] === $email && getBody()['password'] === $password) {
+                echo 'Đăng nhập thành công';
+            } else {
+                $errors['faild'] = 'Tài khoản hoặc mặt khẩu không chính xác';
+            }
+        } else {
+            $errors['email'] = 'Chưa đúng định dạng email';
+        }
+    } else {
+        $errors['required'] = 'Bạn cần nhập đủ 2 trường';
+    }
+
+    if (!empty($errors)) {
+        foreach ($errors as $error) {
+            echo $error. '<br />';
+        }
+    }
+}
 ?>
 
 <div class="row">
@@ -15,7 +41,7 @@ layout('header-login', $data);
         <form action="" method="post">
             <div class="mb-3">
                 <label for="">Email</label>
-                <input type="email" name="email" class="form-control" placeholder="Địa chỉ email ...">
+                <input type="text" name="email" class="form-control" placeholder="Địa chỉ email ...">
             </div>
             <div class="mb-3">
                 <label for="">Password</label>
