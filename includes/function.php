@@ -51,3 +51,57 @@ function sendMail($emailTo, $subject, $content) {
         echo "Bạn không thể gửi mail. Mailer Error: {$mail->ErrorInfo}";
     }
 }
+
+function isPost() {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        return true;
+    }
+
+    return false;
+}
+
+function isGet() {
+    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+        return true;
+    }
+
+    return false;
+}
+
+function getBody() {
+    $bodyArr = [];
+
+    if (isGet()) {
+        if (!empty($_GET)) {
+            foreach ($_GET as $key => $value) {
+                // Xử lý key
+                $key = strip_tags($key);
+
+                // Xử lý value
+                if (is_array($value)) {
+                    $bodyArr[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
+                } else {
+                    $bodyArr[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+                }
+            }
+        }
+    }
+
+    if (isPost()) {
+        if(!empty($_POST)) {
+            foreach ($_POST as $key => $value) {
+                // Xử lý key
+                $key = strip_tags($key);
+
+                // Xử lý value
+                if (is_array($value)) {
+                    $bodyArr[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
+                } else {
+                    $bodyArr[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+                }
+            }
+        }
+    }
+
+    return $bodyArr;
+}
