@@ -18,7 +18,7 @@ function sendMail($emailTo, $subject, $content) {
 
     try {
         //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+        $mail->SMTPDebug = SMTP::DEBUG_OFF;                      //Enable verbose debug output
         $mail->isSMTP();                                            //Send using SMTP
         $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
         $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
@@ -43,6 +43,7 @@ function sendMail($emailTo, $subject, $content) {
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = $subject;
         $mail->Body    = $content;
+        $mail->CharSet = "UTF-8";
 //        $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
         $mail->send();
@@ -104,4 +105,38 @@ function getBody() {
     }
 
     return $bodyArr;
+}
+
+function isPhone($phone) {
+    $firstCharPhone = false;
+
+    $numberPhone = false;
+
+    if ($phone[0] == '0') {
+        $firstCharPhone = true;
+        $phone = substr($phone, 1);
+    }
+
+    if (filter_var($phone, FILTER_VALIDATE_INT) && strlen($phone) == 9) {
+        $numberPhone = true;
+    }
+
+    if ($firstCharPhone && $numberPhone) {
+        return true;
+    }
+
+    return false;
+}
+
+function getMsg($msg, $msgType)
+{
+    echo '<div class="alert alert-'.$msgType.' text-center">';
+    echo $msg;
+    echo '</div>';
+}
+
+function redirect($path = 'index.php')
+{
+    header("Location: $path");
+    exit;
 }
