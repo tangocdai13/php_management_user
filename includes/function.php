@@ -105,3 +105,31 @@ function getBody() {
 
     return $bodyArr;
 }
+
+function isPhone($phone) {
+    $firstCharPhone = false;
+
+    $numberPhone = false;
+
+    if ($phone[0] == '0') {
+        $firstCharPhone = true;
+        $phone = substr($phone, 1);
+    }
+
+    if (filter_var($phone, FILTER_VALIDATE_INT) && strlen($phone) == 9) {
+        $numberPhone = true;
+    }
+
+    if ($firstCharPhone && $numberPhone) {
+        return true;
+    }
+
+    return false;
+}
+
+function getMsg($msg, $msgType)
+{
+    echo '<div class="alert alert-'.$msgType.' text-center">';
+    echo $msg;
+    echo '</div>';
+}
