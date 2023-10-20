@@ -12,11 +12,11 @@ if (isPost()) {
     $errors = [];
 
     //Họ tên : required, 5 kí tự trở lên
-    if (empty(trim($body['name']))) {
-        $errors['name']['required'] = 'Name bắt buộc phải nhập';
+    if (empty(trim($body['fullname']))) {
+        $errors['fullname']['required'] = 'Fullname bắt buộc phải nhập';
     } else {
-        if (mb_strlen(trim($body['name'])) < 5) {
-            $errors['name']['min'] = 'Name ít nhất là 5 ký tự';
+        if (mb_strlen(trim($body['fullname'])) < 5) {
+            $errors['fullname']['min'] = 'Fullname ít nhất là 5 ký tự';
         }
     }
 
@@ -65,10 +65,32 @@ if (isPost()) {
     }
 
     if (empty($errors)) {
-        setFlashSession('msg', 'Validate thành công');
+        setFlashSession('msg', 'Đăng ký thành công');
         setFlashSession('msg_type', 'success');
+        $activeToken = sha1(uniqid().time());
+        $dataInsert = [
+            'email' => $body['email'],
+            'fullname' => $body['fullname'],
+            'phone' => $body['phone'],
+            'password' => password_hash($body['phone'], PASSWORD_DEFAULT),
+            'activeToken' => $activeToken,
+            'createAt' => date('Y-m-d H:i:s'),
+        ];
 
-        echo 'Đăng nhập thành công';
+        insert('users', $dataInsert);
+
+        $linkActive = _WEB_HOST_ROOT.'/?modules=auth&action=active&token='.$activeToken;
+
+        $subject = $body['fullname']. ' vui lòng hãy active tài khoản';
+
+        $content = 'Cảm ơn bạn đã đăng ký. Vui lòng click vào link dưới đây để active tài khoản'. '<br>';
+
+        $content .= $linkActive. '<br>';
+
+        $content .= 'Cảm ơn !';
+
+        sendMail($body['email'], $subject, $content);
+
     } else {
         setFlashSession('msg', 'Vui lòng kiểm tra dữ liệu nhập vào');
         setFlashSession('msg_type', 'danger');
@@ -77,11 +99,7 @@ if (isPost()) {
     $msg = getFlashSession('msg');
     $msgType = getFlashSession('msg_type');
 
-    echo '<pre>';
-    print_r($msg, $msgType);
-    echo '</pre>';
 }
-
 ?>
 
     <div class="row">
@@ -95,7 +113,7 @@ if (isPost()) {
             <form action="" method="post">
                 <div class="mb-3">
                     <label for="">Họ và tên</label>
-                    <input type="text" name="name" class="form-control" placeholder="Name ...">
+                    <input type="text" name="fullname" class="form-control" placeholder="Fullname ...">
                 </div>
                 <div class="mb-3">
                     <label for="">Số điện thoại</label>

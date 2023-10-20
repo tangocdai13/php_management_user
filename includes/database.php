@@ -16,9 +16,7 @@ function query($sql, $data = [], $statementStatus = false)
             $query = $statement->execute($data);
         }
     } catch (Exception $exception) {
-        echo $exception->getMessage();
-
-        echo 'File: '.$exception->getFile(). ' -Line: '.$exception->getLine();
+        require_once 'modules/errors/database.php';
     }
 
     if ($statementStatus && $query) {
@@ -26,6 +24,20 @@ function query($sql, $data = [], $statementStatus = false)
     }
 
     return $query;
+}
+
+function insert($table, $data = []) {
+    if (empty($data)) {
+        return false;
+    }
+
+    $column = implode(', ', array_keys($data));
+
+    $placeholders = ':' . implode(', :', array_keys($data));
+
+    $sql = "INSERT INTO $table($column) VALUES ($placeholders)";
+
+    query($sql, $data, true);
 }
 
 function getRows($sql)
