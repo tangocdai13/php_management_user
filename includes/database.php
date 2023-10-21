@@ -26,6 +26,15 @@ function query($sql, $data = [], $statementStatus = false)
     return $query;
 }
 
+function firstRaw($sql, $data = [])
+{
+    $statement = query($sql, $data, true);
+
+    if (!empty($statement)) {
+        return $statement->fetch(PDO::FETCH_ASSOC);
+    }
+}
+
 function insert($table, $data = []) {
     if (empty($data)) {
         return false;
@@ -38,6 +47,33 @@ function insert($table, $data = []) {
     $sql = "INSERT INTO $table($column) VALUES ($placeholders)";
 
     query($sql, $data, true);
+}
+
+function update($table, $data, $condition, $conditionData = [])
+{
+    if (empty($data)) return false;
+
+    $setValue = [];
+    $setData = [];
+
+    foreach ($data as $key => $value) {
+        $setValue[] = "$key = :$key";
+        $setData[":$key"] = $value;
+    }
+
+    $setClause = implode(', ', $setValue);
+
+    $conditionClause = '';
+
+    if (!empty($condition)) {
+        $conditionClause = "WHERE $condition";
+    }
+
+    $sql = "UPDATE $table SET $setClause $conditionClause";
+
+    $mergeData = array_merge($setData, $conditionData);
+
+    return query($sql, $mergeData, true);
 }
 
 function getRows($sql)
